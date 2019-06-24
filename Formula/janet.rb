@@ -5,10 +5,15 @@ class Janet < Formula
   sha256 "1226240f8ed7f5faafbff6d93e5802c7959c4b40f9212ac6f020d67ef3aa599e"
   head "https://github.com/janet-lang/janet.git"
 
+  depends_on "meson" => :build
+  depends_on "ninja" => :build
+
   def install
-    ENV["PREFIX"] = prefix
-    system "make"
-    system "make", "install"
+    system "meson", "setup", "build", "--buildtype=release", "--prefix=#{prefix}"
+    cd "build" do
+      system "ninja"
+      system "ninja", "install"
+    end
   end
 
   test do
